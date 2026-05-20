@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VagasSul — Empregos no Sul do Brasil</title>
+<meta name="description" content="Encontre vagas de emprego em Curitiba, Florianópolis, Joinville, Blumenau e mais cidades do Sul do Brasil.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%232563eb'/><text y='.9em' font-size='72' x='12'>V</text></svg>">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --blue:#2563eb;--blue-dark:#1d4ed8;--blue-light:#eff6ff;--blue-mid:#dbeafe;
+  --navy:#0f172a;--slate:#64748b;--slate-light:#94a3b8;
+  --bg:#f1f5f9;--white:#fff;--border:#e2e8f0;--text:#1e293b;
+  --green:#16a34a;--green-light:#f0fdf4;
+  --orange:#ea580c;--orange-light:#fff7ed;
+  --purple:#7c3aed;--purple-light:#ede9fe;
+  --r:12px;
+  --sh:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.04);
+  --sh-md:0 4px 6px rgba(0,0,0,.07),0 2px 4px rgba(0,0,0,.05);
+  --sh-lg:0 10px 25px rgba(0,0,0,.1),0 4px 6px rgba(0,0,0,.05);
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.5}
+
+/* ── HEADER ── */
+header{background:var(--white);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;box-shadow:var(--sh)}
+.header-inner{max-width:1200px;margin:0 auto;padding:0 20px;height:62px;display:flex;align-items:center;gap:20px}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0}
+.logo-icon{width:36px;height:36px;background:var(--blue);border-radius:9px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:19px;font-weight:900}
+.logo-text{font-size:20px;font-weight:800;color:var(--navy)}
+.logo-text em{color:var(--blue);font-style:normal}
+nav{display:flex;align-items:center;gap:2px;margin-left:auto}
+nav a{padding:7px 13px;border-radius:8px;font-size:14px;font-weight:500;color:var(--slate);text-decoration:none;transition:.15s}
+nav a:hover{background:var(--bg);color:var(--text)}
+.btn-pri{background:var(--blue);color:#fff!important;padding:8px 18px;border-radius:8px;font-size:14px;font-weight:700;border:none;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:.15s}
+.btn-pri:hover{background:var(--blue-dark)!important}
+.btn-out{background:transparent;color:var(--blue)!important;border:1.5px solid var(--blue);padding:7px 16px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:5px;transition:.15s}
+.btn-out:hover{background:var(--blue-light)!important}
+
+/* ── HERO ── */
+.hero{background:linear-gradient(135deg,#1e3a8a 0%,#1d4ed8 45%,#3b82f6 100%);padding:52px 20px 44px;text-align:center;color:#fff}
+.hero h1{font-size:38px;font-weight:900;margin-bottom:10px;line-height:1.2;letter-spacing:-.5px}
+.hero p{font-size:17px;opacity:.85;margin-bottom:30px}
+.search-box{background:#fff;border-radius:14px;padding:8px;display:flex;gap:8px;max-width:720px;margin:0 auto 22px;box-shadow:0 8px 30px rgba(0,0,0,.22)}
+.search-box input,.search-box select{border:none;outline:none;padding:10px 14px;font-size:15px;color:var(--text);border-radius:8px;background:transparent}
+.search-box input{flex:1;min-width:0}
+.search-box select{border-left:1px solid var(--border);min-width:175px;cursor:pointer}
+.search-box button{background:var(--blue);color:#fff;border:none;border-radius:10px;padding:10px 22px;font-size:15px;font-weight:700;cursor:pointer;white-space:nowrap;transition:.15s;flex-shrink:0}
+.search-box button:hover{background:var(--blue-dark)}
+.hero-chips{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.hchip{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.28);color:#fff;padding:5px 14px;border-radius:20px;font-size:13px;cursor:pointer;transition:.15s}
+.hchip:hover{background:rgba(255,255,255,.3)}
+
+/* ── STATS BAR ── */
+.stats-bar{background:var(--white);border-bottom:1px solid var(--border);padding:12px 20px}
+.stats-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:20px;font-size:13px;color:var(--slate);flex-wrap:wrap}
+.stat-dot{width:8px;height:8px;background:var(--green);border-radius:50%;animation:pulse 2s infinite;flex-shrink:0}
+.stat-item{display:flex;align-items:center;gap:6px}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.map-btn{margin-left:auto;background:var(--blue-light);color:var(--blue);border:1.5px solid var(--blue-mid);border-radius:8px;padding:5px 14px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;transition:.15s}
+.map-btn:hover{background:var(--blue-mid)}
+
+/* ── LAYOUT ── */
+.layout{max-width:1200px;margin:24px auto;padding:0 20px;display:grid;grid-template-columns:256px 1fr;gap:22px}
+@media(max-width:768px){.layout{grid-template-columns:1fr}.sidebar{display:none}}
+
+/* ── SIDEBAR ── */
+.sidebar{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:18px;height:fit-content;position:sticky;top:82px}
+.sb-title{font-size:11px;font-weight:700;color:var(--slate);text-transform:uppercase;letter-spacing:.8px;margin-bottom:14px}
+.fg{margin-bottom:18px}
+.fg label{display:block;font-size:13px;font-weight:600;color:var(--text);margin-bottom:6px}
+.fg select,.fg input[type=text]{width:100%;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;color:var(--text);outline:none;background:var(--white);transition:.15s}
+.fg select:focus,.fg input:focus{border-color:var(--blue)}
+.chips{display:flex;flex-wrap:wrap;gap:5px}
+.chip{padding:4px 11px;border-radius:20px;font-size:12px;font-weight:600;border:1.5px solid var(--border);background:var(--white);cursor:pointer;transition:.15s;color:var(--slate)}
+.chip.on{background:var(--blue-light);border-color:var(--blue);color:var(--blue)}
+.chip:hover{border-color:var(--blue);color:var(--blue)}
+.clr-btn{width:100%;padding:8px;border:none;background:none;color:var(--slate);font-size:13px;cursor:pointer;border-radius:8px;transition:.15s;margin-top:4px}
+.clr-btn:hover{background:var(--bg);color:var(--text)}
+
+/* ── JOBS ── */
+.jobs-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px}
+.jobs-count{font-size:15px;font-weight:600;color:var(--text)}
+.jobs-count b{color:var(--blue)}
+.sort-sel{padding:7px 11px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;color:var(--slate);outline:none;background:var(--white);cursor:pointer}
+.view-btns{display:flex;gap:4px}
+.view-btn{padding:7px 11px;border:1.5px solid var(--border);border-radius:8px;background:var(--white);cursor:pointer;font-size:14px;transition:.15s}
+.view-btn.on{background:var(--blue-light);border-color:var(--blue)}
+
+/* ── JOB CARD ── */
+.job-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:18px 20px;margin-bottom:10px;cursor:pointer;transition:.2s;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:start}
+.job-card:hover{box-shadow:var(--sh-md);border-color:#93c5fd;transform:translateY(-1px)}
+.job-title{font-size:16px;font-weight:700;color:var(--navy);margin-bottom:3px;line-height:1.3}
+.job-co{font-size:14px;color:var(--text);margin-bottom:9px}
+.job-meta{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:9px;align-items:center}
+.bdg{display:inline-flex;align-items:center;gap:3px;padding:3px 9px;border-radius:20px;font-size:12px;font-weight:600}
+.bdg-loc{background:#f1f5f9;color:var(--slate)}
+.bdg-indeed{background:#fef3c7;color:#92400e}
+.bdg-adzuna{background:var(--purple-light);color:var(--purple)}
+.bdg-empresa{background:var(--green-light);color:var(--green)}
+.bdg-new{background:var(--blue-light);color:var(--blue)}
+.bdg-dest{background:var(--orange-light);color:var(--orange)}
+.job-desc{font-size:13px;color:var(--slate);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.job-side{display:flex;flex-direction:column;align-items:flex-end;gap:8px;justify-content:space-between}
+.job-date{font-size:12px;color:var(--slate-light);white-space:nowrap}
+.btn-ver{background:var(--blue-light);color:var(--blue);border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:600;cursor:pointer;transition:.15s;white-space:nowrap}
+.btn-ver:hover{background:var(--blue);color:#fff}
+
+/* ── LOADING / EMPTY ── */
+.loading{text-align:center;padding:60px 20px;color:var(--slate)}
+.spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 14px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.empty{text-align:center;padding:60px 20px}
+.empty-ico{font-size:46px;margin-bottom:10px}
+
+/* ── MAP PANEL ── */
+.map-panel{display:none;background:var(--white);border:1px solid var(--border);border-radius:var(--r);margin-bottom:16px;overflow:hidden}
+.map-panel.open{display:block}
+.map-container{height:380px;position:relative;background:#e5edf5}
+#map{width:100%;height:100%}
+.map-overlay{position:absolute;bottom:12px;left:12px;background:rgba(255,255,255,.95);border-radius:10px;padding:10px 14px;font-size:13px;box-shadow:var(--sh-md);max-width:220px}
+.map-close{position:absolute;top:8px;right:8px;background:#fff;border:1px solid var(--border);border-radius:8px;padding:5px 10px;font-size:13px;cursor:pointer;z-index:10}
+
+/* ── MODAL ── */
+.overlay{position:fixed;inset:0;background:rgba(15,23,42,.55);backdrop-filter:blur(4px);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .2s}
+.overlay.open{opacity:1;pointer-events:all}
+.modal{background:var(--white);border-radius:16px;max-width:640px;width:100%;max-height:88vh;overflow-y:auto;box-shadow:var(--sh-lg);transform:translateY(20px);transition:transform .2s}
+.overlay.open .modal{transform:translateY(0)}
+.modal-hdr{padding:22px 22px 0;display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.modal-x{width:32px;height:32px;border:none;background:var(--bg);border-radius:8px;font-size:16px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:.15s}
+.modal-x:hover{background:var(--border)}
+.modal-body{padding:18px 22px 22px}
+.modal-title{font-size:20px;font-weight:800;color:var(--navy);line-height:1.3}
+.modal-co{font-size:15px;color:var(--text);margin-top:4px}
+.modal-meta{display:flex;flex-wrap:wrap;gap:7px;margin:14px 0}
+.modal-desc{font-size:14px;line-height:1.75;color:var(--text);white-space:pre-wrap}
+.modal-footer{display:flex;gap:10px;margin-top:22px;padding-top:18px;border-top:1px solid var(--border)}
+.btn-cand{flex:1;background:var(--blue);color:#fff;border:none;border-radius:10px;padding:13px 24px;font-size:15px;font-weight:700;cursor:pointer;transition:.15s;text-decoration:none;text-align:center;display:block}
+.btn-cand:hover{background:var(--blue-dark)}
+.btn-salvar{background:var(--bg);color:var(--text);border:1.5px solid var(--border);border-radius:10px;padding:12px 18px;font-size:14px;font-weight:600;cursor:pointer;transition:.15s;white-space:nowrap}
+.btn-salvar:hover{background:var(--border)}
+
+/* ── PLANS ── */
+.section{max-width:1200px;margin:52px auto;padding:0 20px}
+.sec-hdr{text-align:center;margin-bottom:34px}
+.sec-hdr h2{font-size:28px;font-weight:800;color:var(--navy);margin-bottom:8px}
+.sec-hdr p{font-size:16px;color:var(--slate)}
+.plans-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+@media(max-width:680px){.plans-grid{grid-template-columns:1fr}}
+.plan{background:var(--white);border:2px solid var(--border);border-radius:16px;padding:26px;position:relative}
+.plan.pop{border-color:var(--blue)}
+.plan-bdg{position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:var(--blue);color:#fff;padding:3px 14px;border-radius:20px;font-size:12px;font-weight:700;white-space:nowrap}
+.plan-name{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:6px}
+.plan-price{font-size:34px;font-weight:900;color:var(--navy);margin-bottom:3px}
+.plan-price span{font-size:14px;font-weight:400;color:var(--slate)}
+.plan-sub{font-size:13px;color:var(--slate);margin-bottom:18px;padding-bottom:18px;border-bottom:1px solid var(--border)}
+.plan-feat{list-style:none;margin-bottom:22px}
+.plan-feat li{font-size:14px;padding:5px 0;display:flex;align-items:center;gap:7px;color:var(--text)}
+.plan-feat li::before{content:'✓';color:var(--green);font-weight:700;flex-shrink:0}
+.plan-btn{width:100%;padding:11px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;border:none;transition:.15s}
+.plan-btn-free{background:var(--bg);color:var(--text)}.plan-btn-free:hover{background:var(--border)}
+.plan-btn-pro{background:var(--blue);color:#fff}.plan-btn-pro:hover{background:var(--blue-dark)}
+.plan-btn-emp{background:var(--navy);color:#fff}.plan-btn-emp:hover{background:#1e293b}
+
+/* ── COMPANIES ── */
+.companies{background:linear-gradient(135deg,#0f172a 0%,#1e3a5f 100%);padding:60px 20px;text-align:center;color:#fff}
+.companies h2{font-size:28px;font-weight:800;margin-bottom:10px}
+.companies p{font-size:16px;opacity:.8;margin-bottom:30px}
+.co-feats{display:flex;justify-content:center;gap:36px;flex-wrap:wrap;margin-bottom:32px}
+.co-feat{display:flex;flex-direction:column;align-items:center;gap:6px}
+.co-feat .ico{font-size:28px}
+.co-feat span{font-size:13px;opacity:.75}
+.co-feat strong{font-size:15px;font-weight:700}
+.co-plans{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin-bottom:28px}
+.cplan{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:18px 22px;min-width:160px}
+.cplan .price{font-size:24px;font-weight:800}
+.cplan .lbl{font-size:13px;opacity:.8;margin-bottom:3px}
+.cplan .sub{font-size:12px;opacity:.55}
+
+/* ── FOOTER ── */
+footer{background:var(--navy);color:rgba(255,255,255,.6);padding:36px 20px 22px;margin-top:0}
+.footer-inner{max-width:1200px;margin:0 auto}
+.foot-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:28px;margin-bottom:28px}
+@media(max-width:680px){.foot-grid{grid-template-columns:1fr 1fr}}
+.foot-brand .logo-text{color:#fff;font-size:17px}
+.foot-brand p{font-size:13px;margin-top:7px;line-height:1.65}
+.foot-col h4{color:#fff;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px}
+.foot-col a{display:block;font-size:13px;color:rgba(255,255,255,.6);text-decoration:none;padding:3px 0;transition:.15s}
+.foot-col a:hover{color:#fff}
+.foot-btm{border-top:1px solid rgba(255,255,255,.1);padding-top:18px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;font-size:12px}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:22px;right:22px;background:var(--navy);color:#fff;padding:13px 18px;border-radius:10px;font-size:14px;font-weight:500;box-shadow:var(--sh-lg);z-index:300;transform:translateY(70px);opacity:0;transition:.3s;max-width:300px}
+.toast.show{transform:translateY(0);opacity:1}
+
+/* ── RESPONSIVE ── */
+@media(max-width:600px){
+  .hero h1{font-size:26px}
+  .search-box{flex-direction:column}
+  .search-box select{border-left:none;border-top:1px solid var(--border)}
+  .job-card{grid-template-columns:1fr}
+  .job-side{flex-direction:row;align-items:center}
+  .header-inner nav a:not(.btn-pri):not(.btn-out){display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header>
+  <div class="header-inner">
+    <a class="logo" href="#">
+      <div class="logo-icon">V</div>
+      <span class="logo-text">Vagas<em>Sul</em></span>
+    </a>
+    <nav>
+      <a href="#planos">Planos</a>
+      <a href="#empresas">Para Empresas</a>
+      <a href="#" class="btn-out" id="btnEntrar">Entrar</a>
+      <a href="#empresas" class="btn-pri">Publicar Vaga</a>
+    </nav>
+  </div>
+</header>
+
+<!-- Hero -->
+<section class="hero">
+  <h1>Encontre seu emprego<br>no Sul do Brasil</h1>
+  <p>Vagas de Curitiba, Florianópolis, Joinville e mais — atualizadas toda semana</p>
+  <div class="search-box">
+    <input type="text" id="busca" placeholder="Cargo, empresa ou palavra-chave..." oninput="filtrar()">
+    <select id="cidadeHero" onchange="filtrar()">
+      <option value="">Todas as cidades</option>
+      <option>Curitiba</option><option>Ponta Grossa</option><option>Joinville</option>
+      <option>Jaraguá do Sul</option><option>Blumenau</option>
+      <option>Florianópolis</option><option>Criciúma</option>
+    </select>
+    <button onclick="filtrar()">Buscar Vagas</button>
+  </div>
+  <div class="hero-chips">
+    <span class="hchip" onclick="buscaRapida('porteiro')">Porteiro</span>
+    <span class="hchip" onclick="buscaRapida('eletricista')">Eletricista</span>
+    <span class="hchip" onclick="buscaRapida('auxiliar administrativo')">Auxiliar Administrativo</span>
+    <span class="hchip" onclick="buscaRapida('recepcionista')">Recepcionista</span>
+    <span class="hchip" onclick="buscaRapida('vendedor')">Vendedor</span>
+    <span class="hchip" onclick="buscaRapida('motorista')">Motorista</span>
+    <span class="hchip" onclick="buscaRapida('pedreiro')">Pedreiro</span>
+  </div>
+</section>
+
+<!-- Stats -->
+<div class="stats-bar">
+  <div class="stats-inner">
+    <div class="stat-item"><div class="stat-dot"></div><strong id="statTotal">...</strong>&nbsp;vagas disponíveis</div>
+    <div class="stat-item">📍 7 cidades</div>
+    <div class="stat-item">🔄 Atualizado toda semana</div>
+    <button class="map-btn" onclick="toggleMap()">🗺 Ver no mapa</button>
+  </div>
+</div>
+
+<!-- Main -->
+<div class="layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sb-title">Filtros</div>
+    <div class="fg">
+      <label>Estado</label>
+      <div class="chips" id="filtroUF">
+        <span class="chip on" data-v="" onclick="setChip(this,'uf','')">Todos</span>
+        <span class="chip" data-v="PR" onclick="setChip(this,'uf','PR')">PR</span>
+        <span class="chip" data-v="SC" onclick="setChip(this,'uf','SC')">SC</span>
+      </div>
+    </div>
+    <div class="fg">
+      <label>Cidade</label>
+      <select id="filtroCidade" onchange="filtrar()">
+        <option value="">Todas</option>
+        <option>Curitiba</option><option>Ponta Grossa</option><option>Joinville</option>
+        <option>Jaraguá do Sul</option><option>Blumenau</option>
+        <option>Florianópolis</option><option>Criciúma</option>
+      </select>
+    </div>
+    <div class="fg">
+      <label>Fonte</label>
+      <div class="chips" id="filtroFonte">
+        <span class="chip on" data-v="" onclick="setChip(this,'fonte','')">Todas</span>
+        <span class="chip" data-v="indeed" onclick="setChip(this,'fonte','indeed')">Indeed</span>
+        <span class="chip" data-v="adzuna" onclick="setChip(this,'fonte','adzuna')">Adzuna</span>
+        <span class="chip" data-v="empresa" onclick="setChip(this,'fonte','empresa')">Empresa</span>
+      </div>
+    </div>
+    <div class="fg">
+      <label>Publicado há</label>
+      <div class="chips" id="filtroDias">
+        <span class="chip on" data-v="0" onclick="setChip(this,'dias','0')">Todos</span>
+        <span class="chip" data-v="7" onclick="setChip(this,'dias','7')">7 dias</span>
+        <span class="chip" data-v="30" onclick="setChip(this,'dias','30')">30 dias</span>
+      </div>
+    </div>
+    <button class="clr-btn" onclick="limparFiltros()">× Limpar filtros</button>
+  </aside>
+
+  <!-- Jobs -->
+  <div>
+    <!-- Map panel -->
+    <div class="map-panel" id="mapPanel">
+      <div class="map-container">
+        <div id="map"></div>
+        <button class="map-close" onclick="toggleMap()">Fechar mapa ✕</button>
+        <div class="map-overlay" id="mapOverlay" style="display:none">
+          <strong id="mapCidadeNome"></strong><br>
+          <span id="mapCidadeQtd" style="color:var(--slate);font-size:12px"></span><br>
+          <button style="margin-top:6px;background:var(--blue);color:#fff;border:none;border-radius:6px;padding:5px 12px;font-size:13px;cursor:pointer" onclick="filtrarCidade(document.getElementById('mapCidadeNome').textContent)">Ver vagas</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="jobs-hdr">
+      <div class="jobs-count" id="jobsCount">Carregando...</div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <select class="sort-sel" id="sortSel" onchange="filtrar()">
+          <option value="recente">Mais recentes</option>
+          <option value="alpha">A-Z</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="lista">
+      <div class="loading"><div class="spinner"></div><p>Buscando vagas...</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- Plans -->
+<section class="section" id="planos">
+  <div class="sec-hdr">
+    <h2>Planos e Preços</h2>
+    <p>Para candidatos e empresas que querem contratar no Sul</p>
+  </div>
+  <div class="plans-grid">
+    <div class="plan">
+      <div class="plan-name">Gratuito</div>
+      <div class="plan-price">R$ 0 <span>/mês</span></div>
+      <div class="plan-sub">Para quem está começando</div>
+      <ul class="plan-feat">
+        <li>Ver todas as vagas</li>
+        <li>Filtrar por cidade e cargo</li>
+        <li>10 vagas desbloqueadas/mês</li>
+        <li>Busca no mapa</li>
+      </ul>
+      <button class="plan-btn plan-btn-free" onclick="showToast('Você já está no plano gratuito!')">Plano atual</button>
+    </div>
+    <div class="plan pop">
+      <div class="plan-bdg">Mais popular</div>
+      <div class="plan-name">Pro — Candidato</div>
+      <div class="plan-price">R$ 19,90 <span>/mês</span></div>
+      <div class="plan-sub">Para candidatar-se sem limites</div>
+      <ul class="plan-feat">
+        <li>Vagas ilimitadas</li>
+        <li>Ver contatos da empresa</li>
+        <li>Alertas de novas vagas</li>
+        <li>Currículo em destaque</li>
+        <li>Suporte por WhatsApp</li>
+      </ul>
+      <button class="plan-btn plan-btn-pro" onclick="showToast('Em breve! Cadastre-se para ser avisado.')">Assinar — R$ 19,90/mês</button>
+    </div>
+    <div class="plan">
+      <div class="plan-name">Empresa</div>
+      <div class="plan-price">R$ 149 <span>/mês</span></div>
+      <div class="plan-sub">Para empresas que contratam</div>
+      <ul class="plan-feat">
+        <li>Vagas ilimitadas</li>
+        <li>Perfil verificado</li>
+        <li>Candidatos em destaque</li>
+        <li>Painel de candidaturas</li>
+        <li>Suporte prioritário</li>
+      </ul>
+      <button class="plan-btn plan-btn-emp" onclick="showToast('Entre em contato: vagas@nossasolucoes.com.br')">Contratar agora</button>
+    </div>
+  </div>
+</section>
+
+<!-- Companies -->
+<section class="companies" id="empresas">
+  <h2>Sua empresa contrata aqui</h2>
+  <p>Publique vagas e encontre os melhores candidatos do Paraná e Santa Catarina</p>
+  <div class="co-feats">
+    <div class="co-feat"><span class="ico">🎯</span><strong>Candidatos qualificados</strong><span>Perfis do PR e SC</span></div>
+    <div class="co-feat"><span class="ico">⚡</span><strong>Publicação imediata</strong><span>Vaga no ar em minutos</span></div>
+    <div class="co-feat"><span class="ico">📊</span><strong>Painel de candidatos</strong><span>Acompanhe em tempo real</span></div>
+    <div class="co-feat"><span class="ico">✅</span><strong>Perfil verificado</strong><span>Mais credibilidade</span></div>
+  </div>
+  <div class="co-plans">
+    <div class="cplan"><div class="lbl">Vaga avulsa</div><div class="price">R$ 49</div><div class="sub">por vaga publicada</div></div>
+    <div class="cplan"><div class="lbl">Vaga em destaque</div><div class="price">R$ 79</div><div class="sub">topo da listagem</div></div>
+    <div class="cplan"><div class="lbl">Plano mensal</div><div class="price">R$ 149</div><div class="sub">vagas ilimitadas + perfil</div></div>
+  </div>
+  <a href="mailto:vagas@nossasolucoes.com.br" class="btn-pri" style="display:inline-flex;margin-top:8px">Falar com a equipe →</a>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-inner">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <div class="logo-text">Vagas<em style="color:#3b82f6;font-style:normal">Sul</em></div>
+        <p>Conectando candidatos e empresas no Sul do Brasil. Vagas de Indeed, Adzuna e anúncios diretos. Atualizado toda semana.</p>
+      </div>
+      <div class="foot-col">
+        <h4>Candidatos</h4>
+        <a href="#">Ver vagas</a>
+        <a href="#planos">Planos</a>
+        <a href="#">Minha conta</a>
+      </div>
+      <div class="foot-col">
+        <h4>Empresas</h4>
+        <a href="#empresas">Publicar vaga</a>
+        <a href="#empresas">Plano empresa</a>
+        <a href="#empresas">Perfil verificado</a>
+      </div>
+      <div class="foot-col">
+        <h4>Cidades</h4>
+        <a href="#" onclick="filtrarCidade('Curitiba');return false">Curitiba</a>
+        <a href="#" onclick="filtrarCidade('Joinville');return false">Joinville</a>
+        <a href="#" onclick="filtrarCidade('Florianópolis');return false">Florianópolis</a>
+        <a href="#" onclick="filtrarCidade('Blumenau');return false">Blumenau</a>
+      </div>
+    </div>
+    <div class="foot-btm">
+      <span>© 2026 VagasSul — um produto <a href="https://nossasolucoes.com.br" style="color:rgba(255,255,255,.7)">NossaSoluções</a></span>
+      <span>vagas.nossasolucoes.com.br</span>
+    </div>
+  </div>
+</footer>
+
+<!-- Modal -->
+<div class="overlay" id="overlay" onclick="fecharModal(event)">
+  <div class="modal">
+    <div class="modal-hdr">
+      <div>
+        <div class="modal-title" id="mTitle"></div>
+        <div class="modal-co" id="mCo"></div>
+      </div>
+      <button class="modal-x" onclick="fecharModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-meta" id="mMeta"></div>
+      <div class="modal-desc" id="mDesc"></div>
+      <div class="modal-footer">
+        <a class="btn-cand" id="mLink" href="#" target="_blank" rel="noopener">Candidatar-se agora →</a>
+        <button class="btn-salvar" onclick="showToast('Vaga salva! (em breve no app)')">♡ Salvar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Leaflet para o mapa (carregado só quando necessário) -->
+<link rel="stylesheet" id="leafletCss" href="" disabled>
+
+<script>
+const SUPABASE_URL = '__SUPABASE_URL__';
+const SUPABASE_KEY = '__SUPABASE_ANON_KEY__';
+
+let TODAS = [];
+let estado = { uf:'', fonte:'', dias:0 };
+let mapaCarregado = false;
+let mapaInstancia = null;
+
+// ── Carregar vagas ────────────────────────────────────────────────────────────
+async function carregar() {
+  try {
+    if (!SUPABASE_URL || SUPABASE_URL.includes('__SUPABASE')) {
+      TODAS = DEMO; filtrar();
+      return;
+    }
+    const r = await fetch(
+      `${SUPABASE_URL}/rest/v1/vagas?select=*&order=data_publicacao.desc&limit=2000`,
+      { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } }
+    );
+    if (!r.ok) throw new Error(r.statusText);
+    TODAS = await r.json();
+    filtrar();
+    const ul = TODAS[0]?.data_publicacao;
+    if (ul) document.getElementById('statTotal').nextSibling && null;
+  } catch (e) {
+    document.getElementById('lista').innerHTML = `
+      <div class="empty"><div class="empty-ico">⚙️</div>
+      <p style="font-weight:700;color:var(--text)">Configure o Supabase</p>
+      <p style="color:var(--slate);margin-top:8px">Adicione SUPABASE_URL e SUPABASE_ANON_KEY no Vercel.</p></div>`;
+    document.getElementById('jobsCount').textContent = 'Supabase não configurado';
+  }
+}
+
+// ── Filtrar ───────────────────────────────────────────────────────────────────
+function filtrar() {
+  const busca  = document.getElementById('busca').value.toLowerCase().trim();
+  const cHero  = document.getElementById('cidadeHero').value;
+  const cSide  = document.getElementById('filtroCidade').value;
+  const cidade = cHero || cSide;
+  const sort   = document.getElementById('sortSel').value;
+  if (cHero) document.getElementById('filtroCidade').value = cHero;
+  if (cSide) document.getElementById('cidadeHero').value  = cSide;
+
+  const agora = new Date();
+  let list = TODAS.filter(v => {
+    if (busca && !v.titulo?.toLowerCase().includes(busca) && !v.empresa?.toLowerCase().includes(busca)) return false;
+    if (cidade && v.cidade !== cidade) return false;
+    if (estado.uf && v.uf !== estado.uf) return false;
+    if (estado.fonte && v.fonte !== estado.fonte) return false;
+    if (estado.dias > 0) {
+      const diff = (agora - new Date(v.data_publicacao + 'T00:00:00')) / 86400000;
+      if (diff > estado.dias) return false;
+    }
+    return true;
+  });
+
+  if (sort === 'alpha') list.sort((a,b) => (a.titulo||'').localeCompare(b.titulo||'','pt-BR'));
+
+  document.getElementById('statTotal').textContent = TODAS.length.toLocaleString('pt-BR');
+  document.getElementById('jobsCount').innerHTML =
+    `<b>${list.length.toLocaleString('pt-BR')}</b> vaga${list.length!==1?'s':''} encontrada${list.length!==1?'s':''}`;
+
+  if (!list.length) {
+    document.getElementById('lista').innerHTML =
+      `<div class="empty"><div class="empty-ico">🔍</div>
+       <p style="font-weight:700;color:var(--text)">Nenhuma vaga encontrada</p>
+       <p style="color:var(--slate);margin-top:8px">Tente outros filtros.</p></div>`;
+    return;
+  }
+
+  document.getElementById('lista').innerHTML = list.map(v => `
+    <div class="job-card" onclick='abrirVaga(${JSON.stringify(v).replace(/'/g,"&#39;")})'>
+      <div>
+        <div class="job-title">${esc(v.titulo||'')}</div>
+        <div class="job-co">${esc(v.empresa||'Empresa não informada')}</div>
+        <div class="job-meta">
+          <span class="bdg bdg-loc">📍 ${esc(v.cidade||'')}${v.uf?', '+v.uf:''}</span>
+          <span class="bdg bdg-${v.fonte||'empresa'}">${(v.fonte||'empresa').toUpperCase()}</span>
+          ${isNovo(v.data_publicacao)?'<span class="bdg bdg-new">✨ Novo</span>':''}
+        </div>
+        ${v.descricao?`<div class="job-desc">${esc(v.descricao)}</div>`:''}
+      </div>
+      <div class="job-side">
+        <span class="job-date">${fmtData(v.data_publicacao)}</span>
+        <button class="btn-ver">Ver detalhes →</button>
+      </div>
+    </div>`).join('');
+
+  if (mapaInstancia) atualizarPins(list);
+}
+
+// ── Chips de filtro ───────────────────────────────────────────────────────────
+function setChip(el, tipo, val) {
+  const grp = { uf:'filtroUF', fonte:'filtroFonte', dias:'filtroDias' }[tipo];
+  document.querySelectorAll('#'+grp+' .chip').forEach(c => c.classList.remove('on'));
+  el.classList.add('on');
+  if (tipo==='dias') estado.dias = parseInt(val)||0;
+  else estado[tipo] = val;
+  filtrar();
+}
+function limparFiltros() {
+  estado = { uf:'', fonte:'', dias:0 };
+  document.getElementById('busca').value = '';
+  document.getElementById('cidadeHero').value = '';
+  document.getElementById('filtroCidade').value = '';
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('on'));
+  document.querySelector('#filtroUF .chip')?.classList.add('on');
+  document.querySelector('#filtroFonte .chip')?.classList.add('on');
+  document.querySelector('#filtroDias .chip')?.classList.add('on');
+  filtrar();
+}
+function buscaRapida(t) {
+  document.getElementById('busca').value = t;
+  filtrar();
+  document.querySelector('.layout')?.scrollIntoView({ behavior:'smooth' });
+}
+function filtrarCidade(c) {
+  document.getElementById('filtroCidade').value = c;
+  filtrar();
+  document.querySelector('.layout')?.scrollIntoView({ behavior:'smooth' });
+}
+
+// ── Modal ─────────────────────────────────────────────────────────────────────
+function abrirVaga(v) {
+  document.getElementById('mTitle').textContent = v.titulo||'';
+  document.getElementById('mCo').textContent    = v.empresa||'Empresa não informada';
+  document.getElementById('mMeta').innerHTML = `
+    <span class="bdg bdg-loc">📍 ${esc(v.cidade||'')}${v.uf?', '+v.uf:''}</span>
+    <span class="bdg bdg-${v.fonte||'empresa'}">${(v.fonte||'empresa').toUpperCase()}</span>
+    <span class="bdg bdg-new">📅 ${fmtData(v.data_publicacao)}</span>`;
+  document.getElementById('mDesc').textContent =
+    v.descricao || 'Clique em "Candidatar-se" para ver a descrição completa no site da vaga.';
+  const lnk = document.getElementById('mLink');
+  lnk.href = v.link||'#';
+  lnk.onclick = v.link ? null : (e => { e.preventDefault(); showToast('Link não disponível'); });
+  document.getElementById('overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function fecharModal(e) {
+  if (e && e.target !== document.getElementById('overlay')) return;
+  document.getElementById('overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', e => { if (e.key==='Escape') fecharModal(); });
+
+// ── Mapa (Leaflet OpenStreetMap — gratuito) ───────────────────────────────────
+const COORDS = {
+  'Curitiba':       [-25.4290, -49.2671],
+  'Ponta Grossa':   [-25.0945, -50.1633],
+  'Joinville':      [-26.3044, -48.8488],
+  'Jaraguá do Sul': [-26.4857, -49.0699],
+  'Blumenau':       [-26.9194, -49.0661],
+  'Florianópolis':  [-27.5954, -48.5480],
+  'Criciúma':       [-28.6780, -49.3703],
+};
+
+function toggleMap() {
+  const panel = document.getElementById('mapPanel');
+  panel.classList.toggle('open');
+  if (panel.classList.contains('open') && !mapaCarregado) carregarMapa();
+  else if (panel.classList.contains('open') && mapaInstancia) {
+    setTimeout(() => mapaInstancia.invalidateSize(), 100);
+  }
+}
+
+function carregarMapa() {
+  // Carregar Leaflet dinamicamente
+  const css = document.createElement('link');
+  css.rel = 'stylesheet';
+  css.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+  document.head.appendChild(css);
+
+  const js = document.createElement('script');
+  js.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+  js.onload = () => iniciarMapa();
+  document.head.appendChild(js);
+  mapaCarregado = true;
+}
+
+function iniciarMapa() {
+  mapaInstancia = L.map('map', { zoomControl: true }).setView([-26.8, -49.3], 7);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap',
+    maxZoom: 13,
+  }).addTo(mapaInstancia);
+  atualizarPins(TODAS);
+}
+
+function atualizarPins(vagas) {
+  if (!mapaInstancia) return;
+  mapaInstancia.eachLayer(l => { if (l instanceof L.CircleMarker) mapaInstancia.removeLayer(l); });
+
+  const cont = {};
+  vagas.forEach(v => { if (v.cidade) cont[v.cidade] = (cont[v.cidade]||0)+1; });
+
+  Object.entries(COORDS).forEach(([cidade, latlng]) => {
+    const qtd = cont[cidade] || 0;
+    const r = Math.min(6 + Math.sqrt(qtd) * 2, 36);
+    const m = L.circleMarker(latlng, {
+      radius: r,
+      fillColor: qtd > 0 ? '#2563eb' : '#94a3b8',
+      color: '#fff', weight: 2,
+      fillOpacity: qtd > 0 ? 0.85 : 0.4,
+    }).addTo(mapaInstancia);
+
+    m.bindTooltip(`<b>${cidade}</b><br>${qtd} vaga${qtd!==1?'s':''}`, { permanent: false });
+    m.on('click', () => {
+      document.getElementById('mapCidadeNome').textContent = cidade;
+      document.getElementById('mapCidadeQtd').textContent  = `${qtd} vaga${qtd!==1?'s':''}`;
+      document.getElementById('mapOverlay').style.display  = 'block';
+    });
+  });
+}
+
+// ── Utils ─────────────────────────────────────────────────────────────────────
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function fmtData(d) {
+  if (!d) return '';
+  const dt   = new Date(d + 'T00:00:00');
+  const diff = Math.floor((new Date() - dt) / 86400000);
+  if (diff === 0) return 'Hoje';
+  if (diff === 1) return 'Ontem';
+  if (diff < 7)  return `${diff} dias atrás`;
+  if (diff < 30) return `${Math.floor(diff/7)} sem. atrás`;
+  return dt.toLocaleDateString('pt-BR', { day:'2-digit', month:'short' });
+}
+function isNovo(d) {
+  if (!d) return false;
+  return (new Date() - new Date(d + 'T00:00:00')) / 86400000 < 3;
+}
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3200);
+}
+
+// ── Demo data (quando Supabase não está configurado) ──────────────────────────
+const DEMO = [
+  { titulo:'Porteiro Noturno', empresa:'Condomínio Central', cidade:'Curitiba', uf:'PR', fonte:'indeed',  data_publicacao:dDias(0), descricao:'Vaga para porteiro noturno em condomínio residencial. Salário + benefícios.', link:'#' },
+  { titulo:'Auxiliar Administrativo', empresa:'Distribuidora Sul', cidade:'Joinville', uf:'SC', fonte:'adzuna',  data_publicacao:dDias(1), descricao:'Empresa busca auxiliar para atendimento e controle de documentos.', link:'#' },
+  { titulo:'Eletricista Residencial', empresa:'EletroSul Serviços', cidade:'Blumenau', uf:'SC', fonte:'indeed',  data_publicacao:dDias(2), descricao:'Empresa de manutenção contrata eletricista com CREA ou curso técnico.', link:'#' },
+  { titulo:'Recepcionista', empresa:'Clínica Vida', cidade:'Florianópolis', uf:'SC', fonte:'adzuna',  data_publicacao:dDias(0), descricao:'Clínica médica contrata recepcionista para atendimento presencial e agendamentos.', link:'#' },
+  { titulo:'Pedreiro / Servente', empresa:'Construtora PR', cidade:'Ponta Grossa', uf:'PR', fonte:'indeed',  data_publicacao:dDias(5), descricao:'Construtora contrata pedreiro e serventes para obras residenciais.', link:'#' },
+  { titulo:'Motorista de Entregas', empresa:'Logística Fast', cidade:'Curitiba', uf:'PR', fonte:'adzuna',  data_publicacao:dDias(1), descricao:'Empresa de logística contrata motoristas para entregas urbanas. CNH B.', link:'#' },
+  { titulo:'Vendedor Externo', empresa:'Empresa Comercial SC', cidade:'Criciúma', uf:'SC', fonte:'indeed',  data_publicacao:dDias(4), descricao:'Vaga para vendedor externo com carteira de clientes ou experiência em B2B.', link:'#' },
+  { titulo:'Cuidador de Idosos', empresa:'Casa de Repouso Bem Viver', cidade:'Jaraguá do Sul', uf:'SC', fonte:'indeed',  data_publicacao:dDias(2), descricao:'Contratamos cuidador(a) de idosos para trabalho em residência.', link:'#' },
+  { titulo:'Zelador de Prédio', empresa:'Administradora ABC', cidade:'Joinville', uf:'SC', fonte:'adzuna',  data_publicacao:dDias(3), descricao:'Condomínio comercial contrata zelador com experiência em manutenção predial.', link:'#' },
+  { titulo:'Recepcionista Hotel', empresa:'Hotel Sul Palace', cidade:'Florianópolis', uf:'SC', fonte:'indeed',  data_publicacao:dDias(1), descricao:'Hotel 4 estrelas busca recepcionista com inglês básico e experiência em hotelaria.', link:'#' },
+];
+function dDias(n) { const d=new Date(); d.setDate(d.getDate()-n); return d.toISOString().slice(0,10); }
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+carregar();
+</script>
+</body>
+</html>
