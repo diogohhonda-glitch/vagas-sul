@@ -1,23 +1,29 @@
 require('dotenv').config();
 const axios = require('axios');
 const { XMLParser } = require('fast-xml-parser');
-const { createClient } = require('@supabase/supabase-js');
 
 const DRY_RUN = process.argv.includes('--dry-run') || process.env.DRY_RUN === 'true';
-const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
-const parser = new XMLParser({ ignoreAttributes: false });
+const parser  = new XMLParser({ ignoreAttributes: false });
 
+const SUPABASE_URL = process.env.SUPABASE_URL;
+const SUPABASE_KEY = process.env.SUPABASE_SERVICE_KEY;
 const ADZUNA_APP_ID  = process.env.ADZUNA_APP_ID  || '9855a269';
 const ADZUNA_APP_KEY = process.env.ADZUNA_APP_KEY || 'd59961ec9e59e7767d380b082835e672';
 
+const SUPA_HEADERS = {
+  'apikey': SUPABASE_KEY,
+  'Authorization': `Bearer ${SUPABASE_KEY}`,
+  'Content-Type': 'application/json',
+};
+
 const CIDADES = [
-  { nome: 'Curitiba',         uf: 'PR', indeed: 'Curitiba,+PR',          adzuna: 'Curitiba' },
-  { nome: 'Ponta Grossa',     uf: 'PR', indeed: 'Ponta+Grossa,+PR',      adzuna: 'Ponta Grossa' },
-  { nome: 'Joinville',        uf: 'SC', indeed: 'Joinville,+SC',          adzuna: 'Joinville' },
-  { nome: 'Jaraguá do Sul',   uf: 'SC', indeed: 'Jaragua+do+Sul,+SC',    adzuna: 'Jaraguá do Sul' },
-  { nome: 'Blumenau',         uf: 'SC', indeed: 'Blumenau,+SC',           adzuna: 'Blumenau' },
-  { nome: 'Florianópolis',    uf: 'SC', indeed: 'Florianopolis,+SC',      adzuna: 'Florianópolis' },
-  { nome: 'Criciúma',         uf: 'SC', indeed: 'Criciuma,+SC',           adzuna: 'Criciúma' },
+  { nome: 'Curitiba',         uf: 'PR', indeed: 'Curitiba,+PR',        adzuna: 'Curitiba' },
+  { nome: 'Ponta Grossa',     uf: 'PR', indeed: 'Ponta+Grossa,+PR',    adzuna: 'Ponta Grossa' },
+  { nome: 'Joinville',        uf: 'SC', indeed: 'Joinville,+SC',        adzuna: 'Joinville' },
+  { nome: 'Jaraguá do Sul',   uf: 'SC', indeed: 'Jaragua+do+Sul,+SC',  adzuna: 'Jaraguá do Sul' },
+  { nome: 'Blumenau',         uf: 'SC', indeed: 'Blumenau,+SC',         adzuna: 'Blumenau' },
+  { nome: 'Florianópolis',    uf: 'SC', indeed: 'Florianopolis,+SC',    adzuna: 'Florianópolis' },
+  { nome: 'Criciúma',         uf: 'SC', indeed: 'Criciuma,+SC',         adzuna: 'Criciúma' },
 ];
 
 const TERMOS = [
@@ -26,18 +32,18 @@ const TERMOS = [
   'motorista', 'vendedor', 'operador de caixa', 'técnico de manutenção', 'enfermeiro',
 ];
 
-const HEADERS = {
+const BROWSER_HEADERS = {
   'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/124 Safari/537.36',
   'Accept-Language': 'pt-BR,pt;q=0.9',
 };
 
-// ── Indeed RSS (sem limite, sem chave) ─────────────────────────────────────────
+// ── Indeed RSS ────────────────────────────────────────────────────────────────
 async function scraperIndeed(cidade, termo) {
   const url = `https://br.indeed.com/rss?q=${encodeURIComponent(termo)}&l=${cidade.indeed}&sort=date&radius=30`;
   try {
-    const { data } = await axios.get(url, { headers: HEADERS, timeout: 15000 });
+    const { data } = await axios.get(url, { headers: BROWSER_HEADERS, timeout: 15000 });
     const parsed = parser.parse(data);
-    const items = parsed?.rss?.channel?.item || [];
+    const items  = parsed?.rss?.channel?.item || [];
     return (Array.isArray(items) ? items : [items])
       .map(item => ({
         titulo:          limpar(item.title || ''),
@@ -57,7 +63,7 @@ async function scraperIndeed(cidade, termo) {
   }
 }
 
-// ── Adzuna API (250 req/dia no plano free) ────────────────────────────────────
+// ── Adzuna API ────────────────────────────────────────────────────────────────
 async function scraperAdzuna(cidade, termo) {
   const url =
     `https://api.adzuna.com/v1/api/jobs/br/search/1` +
@@ -87,18 +93,35 @@ async function scraperAdzuna(cidade, termo) {
   }
 }
 
-// ── Salvar no Supabase ────────────────────────────────────────────────────────
+// ── Salvar no Supabase via REST direto (sem pacote supabase-js) ───────────────
 async function salvarVagas(vagas) {
   if (!vagas.length) return 0;
-  if (DRY_RUN) {
-    console.log(`  [DRY-RUN] ${vagas.length} vagas (não salvas)`);
+  if (DRY_RUN) { console.log(`  [DRY-RUN] ${vagas.length} vagas`); return vagas.length; }
+  try {
+    await axios.post(
+      `${SUPABASE_URL}/rest/v1/vagas`,
+      vagas,
+      { headers: { ...SUPA_HEADERS, 'Prefer': 'resolution=ignore-duplicates,return=minimal' } }
+    );
     return vagas.length;
+  } catch (e) {
+    console.error('  [Supabase]', e.response?.data || e.message);
+    return 0;
   }
-  const { error } = await supabase
-    .from('vagas')
-    .upsert(vagas, { onConflict: 'hash', ignoreDuplicates: true });
-  if (error) { console.error('  [Supabase]', error.message); return 0; }
-  return vagas.length;
+}
+
+async function limparAntigas() {
+  const limite = new Date();
+  limite.setDate(limite.getDate() - 60);
+  try {
+    await axios.delete(
+      `${SUPABASE_URL}/rest/v1/vagas?data_publicacao=lt.${limite.toISOString().slice(0, 10)}`,
+      { headers: SUPA_HEADERS }
+    );
+    console.log('Vagas antigas removidas (>60 dias)');
+  } catch (e) {
+    console.error('  [Supabase limpeza]', e.message);
+  }
 }
 
 // ── Utils ─────────────────────────────────────────────────────────────────────
@@ -118,20 +141,17 @@ async function main() {
   console.log(`\nVagasSul Scraper — ${new Date().toLocaleString('pt-BR')} ${DRY_RUN ? '[DRY-RUN]' : ''}`);
   let total = 0;
   let adzunaReqs = 0;
-  const ADZUNA_LIMIT = 200; // margem de segurança (limite: 250/dia)
 
   for (const cidade of CIDADES) {
     console.log(`\n${cidade.nome} / ${cidade.uf}`);
     const vagas = [];
 
     for (const termo of TERMOS) {
-      // Indeed RSS — sem limite de requisições
       const indeedVagas = await scraperIndeed(cidade, termo);
       vagas.push(...indeedVagas);
       await sleep(600);
 
-      // Adzuna — controla para não passar o limite diário
-      if (adzunaReqs < ADZUNA_LIMIT) {
+      if (adzunaReqs < 200) {
         const adzunaVagas = await scraperAdzuna(cidade, termo);
         vagas.push(...adzunaVagas);
         adzunaReqs++;
@@ -140,23 +160,12 @@ async function main() {
     }
 
     const unicos = [...new Map(vagas.map(v => [v.hash, v])).values()];
-    console.log(`  ${unicos.length} vagas únicas (${adzunaReqs} req Adzuna usadas)`);
-    const salvas = await salvarVagas(unicos);
-    total += salvas;
+    console.log(`  ${unicos.length} vagas únicas`);
+    total += await salvarVagas(unicos);
     await sleep(1200);
   }
 
-  // Limpar vagas antigas (mais de 60 dias)
-  if (!DRY_RUN) {
-    const limite = new Date();
-    limite.setDate(limite.getDate() - 60);
-    const { error } = await supabase
-      .from('vagas')
-      .delete()
-      .lt('data_publicacao', limite.toISOString().slice(0, 10));
-    if (!error) console.log('\nVagas antigas removidas (>60 dias)');
-  }
-
+  if (!DRY_RUN) await limparAntigas();
   console.log(`\nConcluído — ${total} vagas processadas`);
 }
 
